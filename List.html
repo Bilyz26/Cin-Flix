@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CinéFlix - Ma Liste</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
+    <header class="bg-white dark:bg-gray-800 shadow-md">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="text-3xl font-bold text-blue-600">CinéFlix</a>
+                <div class="flex items-center space-x-4">
+                    <button id="darkModeToggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                            </path>
+                        </svg>
+                    </button>
+                    <span class="text-blue-600 font-medium">Ma Liste</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-8">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-8">Ma Liste de Films</h1>
+
+            <!-- Options de tri -->
+            <div class="mb-8">
+                <div class="flex flex-wrap items-center gap-4">
+                    <label class="text-gray-700 dark:text-gray-300">Trier par :</label>
+                    <select id="sortOption" 
+                            class="px-4 py-2 rounded-lg border dark:bg-gray-800 dark:text-white">
+                        <option value="date">Date d'ajout</option>
+                        <option value="title">Titre</option>
+                        <option value="rating">Note</option>
+                    </select>
+
+                    <!-- Boutons de configuration -->
+                    <div class="flex gap-2 ml-auto">
+                        <button id="saveConfigBtn" 
+                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            Sauvegarder configuration
+                        </button>
+                        <button id="loadConfigBtn" 
+                                class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">
+                            Charger configuration
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Message si la liste est vide -->
+            <div id="emptyMessage" class="hidden text-center py-12">
+                <p class="text-gray-600 dark:text-gray-400 text-lg">
+                    Votre liste est vide. Parcourez nos films et ajoutez ceux qui vous intéressent !
+                </p>
+                <a href="index.html" 
+                   class="inline-block mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Découvrir des films
+                </a>
+            </div>
+
+            <!-- Liste des films sauvegardés -->
+            <div id="savedMoviesList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Template pour un film sauvegardé -->
+                <template id="savedMovieTemplate">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <div class="flex">
+                            <div class="w-1/3">
+                                <img class="movie-poster w-full h-48 object-cover" src="" alt="">
+                            </div>
+                            <div class="w-2/3 p-4">
+                                <div class="flex justify-between items-start">
+                                    <h2 class="movie-title text-xl font-semibold text-gray-900 dark:text-white"></h2>
+                                    <button class="remove-btn text-red-600 hover:text-red-700">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="movie-rating flex items-center mt-2">
+                                    <!-- Étoiles ajoutées dynamiquement -->
+                                </div>
+                                <p class="movie-desc text-gray-600 dark:text-gray-400 mt-2 line-clamp-2"></p>
+                                <div class="mt-4 flex justify-between items-center">
+                                    <span class="added-date text-sm text-gray-500 dark:text-gray-400"></span>
+                                    <a href="#" class="movie-link text-blue-600 hover:text-blue-700">Voir détails</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-8 flex justify-center space-x-2">
+                <button id="prevPage" 
+                        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50">
+                    Précédent
+                </button>
+                <div id="pageNumbers" class="flex space-x-2">
+                    <!-- Numéros de page ajoutés dynamiquement -->
+                </div>
+                <button id="nextPage" 
+                        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50">
+                    Suivant
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white dark:bg-gray-800 mt-12 py-6">
+        <div class="container mx-auto px-6 text-center text-gray-700 dark:text-gray-300">
+            <p>&copy; 2024 CinéFlix - Tous droits réservés</p>
+        </div>
+    </footer>
+
+    <script src="list.js"></script>
+    <script src="main.js"></script>
+
+</body>
+</html>
